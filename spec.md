@@ -49,11 +49,22 @@ There are two code sections.
 4. `div`
 5. `rem`
 
+### Comparison Operation
+
+1. `eq`
+2. `neq`
+3. `gt`
+4. `lt`
+5. `ge`
+6. `le`
+
 ### Control Flow
 
 1. `label <label (usize)>`
 2. `goto <label (usize)>`
-3. `branch <label (usize)>`
+3. `branch <label (usize)>` 
+    goto the specific label when the stack top has value other than 0
+    the stack top will be poped
 
 ### Function Calling
 
