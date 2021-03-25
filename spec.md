@@ -18,17 +18,28 @@ Therefore, functions have minimal side-effects: all information it can use is fr
 
 This is used to associate the nomenclature of functions, classes, and objects between different programs and libraries.
 
-## Instructions
+## Code Section
+
+There are two code sections.
+
+1. `.class` to define program-level structures.
+2. `.function` to define functions and procedures.
+
+## Virtual Instructions
+
+### Class and Function Declaration
+
+1. `defun <fheap_addr (String)> <par_size (usize)>` & `endef`: applied to top levels of `.function` section only
+2. `defcl` & `endcl`: applied to all levels of `.class` section.
 
 ### Stack and Memory Manipulation
 
-1. `pushi <type (u8)> <immediate>`
-2. `pushv <var (u8)>`
-3. `pop`
-4. `load <heap_addr (u16)>`
-5. `store <heap_addr (u16)>`
-6. `stores <len (u16)> <string (bytes[len])>`
-7. `alias <var (u8)> <heap_addr (u16)>` associates a variable name with a heap object
+1. `pushi <immediate (i32)>` / `pushf <immediate (f32)>`
+2. `pop <heap_addr (u16)>`
+3. `load <heap_addr (u16)>`
+4. `store <heap_addr (u16)>`
+5. `stores <heap_addr (u16)> <len (u16)> <string (bytes[len])>`
+6. `alias <var (String)> <heap_addr (u16)>` associates a variable name with a heap object
 
 ### Arithmetic Operations
 
@@ -38,9 +49,23 @@ This is used to associate the nomenclature of functions, classes, and objects be
 4. `div`
 5. `rem`
 
+### Control Flow
+
+1. `label <label (usize)>`
+2. `goto <label (usize)>`
+
 ### Function Calling
 
-`call <fheap_addr (u8)>` instruction will pop the stack for the input variables required by the function.
+`call <fheap_name (String)>` instruction will pop the stack for the input variables required by the function.
 
 ## Encoding
 
+There are two encodings of the RVM language.
+
+One encoding is the `raw encoding`, where each operation and namespace are encoded in english.
+The `raw encoding` is more convenient and it should be used for debugging only.
+
+The second encoding is the `byte encoding`, which is designed for space efficiency.
+Therefore, `byte encoding` should be the only encoding used in production.
+
+### Byte Encoding

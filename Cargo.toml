@@ -1,5 +1,5 @@
 [package]
-name = "Rust-VM"
+name = "rust_vm"
 version = "0.1.0"
 authors = ["Yudi Yang <yyang116@u.rochester.edu>"]
 edition = "2018"
