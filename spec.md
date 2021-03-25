@@ -53,6 +53,7 @@ There are two code sections.
 
 1. `label <label (usize)>`
 2. `goto <label (usize)>`
+3. `branch <label (usize)>`
 
 ### Function Calling
 
