@@ -38,10 +38,10 @@ impl Exec {
         for token in & self.tokens {
             match token {
                 Token::Pushi(val) => {
-                    mem.stack.push_back(Atom::VInt(*val));
+                    mem.stack.push(Atom::VInt(*val));
                 }
                 Token::Pushf(val) => {
-                    mem.stack.push_back(Atom::VFloat(*val));
+                    mem.stack.push(Atom::VFloat(*val));
                 }
                 Token::Stores(iloc, string) => {
                     while *iloc >= mem.heap.len() {
@@ -50,12 +50,12 @@ impl Exec {
                     mem.heap[*iloc] = Atom::VString(string.to_string());
                 }
                 Token::Load(iloc) => {
-                    mem.stack.push_back(Atom::Ref(*iloc));
+                    mem.stack.push(Atom::Ref(*iloc));
                 }
                 Token::Call(name) => {
                     match name.as_str() {
                         "print" => {
-                            let to_print = mem.stack.pop_back().unwrap();
+                            let to_print = mem.stack.pop().unwrap();
                             mem = runtime::print(to_print, mem);
                         }
                         _ => {
