@@ -1,3 +1,5 @@
+use std::collections::LinkedList;
+
 #[derive(Debug, Clone)]
 pub enum Atom {
     Ref(usize),
@@ -9,12 +11,12 @@ pub enum Atom {
 
 #[derive(Debug)]
 pub struct Memory {
-    pub stack : Vec<Atom>,
+    pub stack : LinkedList<Atom>,
     pub heap : Vec<Atom>
 }
 
 impl Memory {
     pub fn new() -> Memory {
-        return Memory{stack: Vec::new(), heap: Vec::new()};
+        return Memory{stack: LinkedList::new(), heap: Vec::new()};
     }
 }
