@@ -6,6 +6,9 @@ use std::fs;
 use std::env;
 
 pub mod scanner;
+pub mod ast;
+
+const COMPILE_ERROR : i32 = 1;
 
 fn print_help() {
     println!("NAME");
@@ -24,9 +27,14 @@ fn main() {
             return;
         }
     };
-    let mut scanner = scanner::Scanner::from_string(fs::read_to_string(path)
+    let scanner = scanner::Scanner::from_string(fs::read_to_string(path)
         .unwrap());
+    /*
     while scanner.has_next() {
         println!("{:?}", scanner.next());
     }
+    */
+
+    let ast = ast::make_ast(scanner);
+    println!("{:?}", ast);
 }

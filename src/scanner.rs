@@ -15,8 +15,8 @@ pub enum Token {
 
 #[derive(Debug, Clone)]
 pub struct Inst {
-    token : Token,
-    row   : usize
+    pub token : Token,
+    pub row   : usize
 }
 
 pub struct Scanner {
@@ -123,6 +123,10 @@ impl Scanner {
             Some(_) => true,
             None => false
         };
+    }
+
+    pub fn peek(&mut self) -> Option<Inst> {
+        return self.curr.clone();
     }
 
     pub fn next(&mut self) -> Option<Inst> {
