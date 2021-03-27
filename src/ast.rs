@@ -1,38 +1,103 @@
-use super::scanner;
+use super::scanner::{Token, Scanner};
+use super::mem_alloc::{Atom, Memory};
+use super::runtime;
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Exec {
-    pub tokens : Vec<scanner::Token>,
+    pub tokens : Vec<Token>,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Program {
     pub class : Class,
     pub func : Fn,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Class {
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct DeFun {
     pub name : String,
     pub pars : usize,
     pub exec : Exec
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Fn {
     pub defs : Vec<DeFun>,
 }
 
+impl Exec {
+    pub fn compile(& self) {
 
-pub fn make_class(mut scan: scanner::Scanner) -> (Class, scanner::Scanner) {
+    }
+
+    pub fn simulate(& self, mut mem : Box<Memory>, prog : Box<Program>) -> Box<Memory> {
+        for token in & self.tokens {
+            match token {
+                Token::Pushi(val) => {
+                    mem.stack.push_back(Atom::VInt(*val));
+                }
+                Token::Pushf(val) => {
+                    mem.stack.push_back(Atom::VFloat(*val));
+                }
+                Token::Stores(iloc, string) => {
+                    while *iloc >= mem.heap.len() {
+                        mem.heap.push(Atom::Null);
+                    }
+                    mem.heap[*iloc] = Atom::VString(string.to_string());
+                }
+                Token::Load(iloc) => {
+                    mem.stack.push_back(Atom::Ref(*iloc));
+                }
+                Token::Call(name) => {
+                    match name.as_str() {
+                        "print" => {
+                            let to_print = mem.stack.pop_back().unwrap();
+                            mem = runtime::print(to_print, mem);
+                        }
+                        _ => {
+                            for def in &prog.func.defs {
+                                if def.name == *name {
+                                    mem = def.simulate(mem, prog.clone());
+                                }
+                            }
+                        }
+                    }
+                }
+                _ => {
+                    unreachable!();
+                }
+            }
+        }
+        return mem;
+    }
+}
+
+impl DeFun {
+    pub fn simulate(& self, mut mem : Box<Memory>, prog : Box<Program>) -> Box<Memory> {
+        mem = self.exec.simulate(mem, prog);
+        return mem;
+    }
+}
+
+impl Program {
+    pub fn simulate(&self, mut mem : Box<Memory>) {
+        for fns in & self.func.defs {
+            if fns.name == "main" {
+                mem = fns.simulate(mem, Box::new(self.clone()));
+            }
+        }
+    }
+}
+
+pub fn make_class(mut scan: Scanner) -> (Class, Scanner) {
     match scan.next() {
         Some(v) => {
             match v.token {
-                scanner::Token::SClass => {
+                Token::SClass => {
                     return (Class{}, scan);
                     // TODO: class construct
                 }
@@ -50,13 +115,13 @@ pub fn make_class(mut scan: scanner::Scanner) -> (Class, scanner::Scanner) {
     }
 }
 
-pub fn make_execs(mut scan: scanner::Scanner) -> (Exec, scanner::Scanner) {
+pub fn make_execs(mut scan: Scanner) -> (Exec, Scanner) {
     let mut execs = Exec{tokens: vec![]};
     loop {
         match scan.peek() {
             Some(v) => {
                 match v.token {
-                    scanner::Token::Endef => {
+                    Token::Endef => {
                         break;
                     }
                     _ => {
@@ -73,18 +138,18 @@ pub fn make_execs(mut scan: scanner::Scanner) -> (Exec, scanner::Scanner) {
     return (execs, scan);
 }
 
-pub fn make_defun(mut scan: scanner::Scanner) -> 
-        (Option<DeFun>, scanner::Scanner) {
+pub fn make_defun(mut scan: Scanner) -> 
+        (Option<DeFun>, Scanner) {
     match scan.peek() {
         Some(v) => {
             match v.token {
-                scanner::Token::Defun(name, pars) => {
+                Token::Defun(name, pars) => {
                     scan.next();
                     let (exec, mut scan) = make_execs(scan);
                     match scan.next() {
                         Some(v) => {
                             match v.token {
-                                scanner::Token::Endef => {}
+                                Token::Endef => {}
                                 _ => {
                                     eprintln!("{}: expected Endef, found {:?}",
                                         v.row, v.token);
@@ -110,11 +175,11 @@ pub fn make_defun(mut scan: scanner::Scanner) ->
     }
 }
 
-pub fn make_fn(mut scan: scanner::Scanner) -> (Fn, scanner::Scanner) {
+pub fn make_fn(mut scan: Scanner) -> (Fn, Scanner) {
     match scan.next() {
         Some(v) => {
             match v.token {
-                scanner::Token::SFn => {
+                Token::SFn => {
                     let mut defs : Vec<DeFun> = vec![];
                     loop {
                         let (defun, scan_) = make_defun(scan);
@@ -144,11 +209,11 @@ pub fn make_fn(mut scan: scanner::Scanner) -> (Fn, scanner::Scanner) {
     }
 }
 
-pub fn make_ast(mut scan : scanner::Scanner) -> Program {
+pub fn make_ast(mut scan : Scanner) -> Program {
     match scan.next() {
         Some(prog) => {
             match prog.token {
-                scanner::Token::SRaw => {
+                Token::SRaw => {
                     let (class, scan) = make_class(scan);
                     let (func, _) = make_fn(scan);
                     return Program{class, func};

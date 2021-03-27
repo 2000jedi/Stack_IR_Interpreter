@@ -7,6 +7,8 @@ use std::env;
 
 pub mod scanner;
 pub mod ast;
+pub mod mem_alloc;
+pub mod runtime;
 
 const COMPILE_ERROR : i32 = 1;
 
@@ -37,4 +39,5 @@ fn main() {
 
     let ast = ast::make_ast(scanner);
     println!("{:?}", ast);
+    ast.simulate(Box::new(mem_alloc::Memory::new()));
 }
