@@ -4,7 +4,7 @@
 .raw
 .class
 .function
-defun main 0
+defun main 0 NULL
 stores 0 30 "print the smaller from a and b"
 load 0
 call println

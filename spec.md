@@ -2,7 +2,7 @@
 
 ## Object Representation
 
-Each data in the VM is stored as an `object` onto the stack or the heap. An `object` stores a few tags along with the data. The data structure of an `object` is described below, with a field name and a description of the field:
+Each data in the VM is stored as an `atom` onto the stack or the heap. An `atom` stores a few tags along with the data. The data structure of an `object` is described below, with a field name and a description of the field:
 
 * `type`: identfier that stores the data type
 * `len`: the length of the data, if applicable
@@ -29,7 +29,7 @@ There are two code sections.
 
 ### Class and Function Declaration
 
-1. `defun <fheap_addr (String)> <par_size (usize)>` & `endef`: applied to top levels of `.function` section only
+1. `defun <fheap_addr (String)> <par_size (usize)> [list of <par_type(String)] <return_type>` & `endef`: applied to top levels of `.function` section only
 2. `defcl` & `endcl`: applied to all levels of `.class` section.
 
 ### Stack and Memory Manipulation

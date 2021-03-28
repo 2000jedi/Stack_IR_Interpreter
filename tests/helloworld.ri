@@ -1,8 +1,8 @@
 .raw
 .class
 .function
-defun main 0  ; entry function is main, it takes in no argument.
+defun main 0 NULL  ; entry function is main, it takes in no argument.
 stores 0 12 "hello, world"  ; stores the string into local variable #0.
 load 0        ; push local variable #0 onto the stack.
-call print    ; $print refers to the ID of the print function.
+call println  ; $print refers to the ID of the print function.
 endef

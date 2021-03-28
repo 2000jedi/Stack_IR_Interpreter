@@ -1,7 +1,9 @@
+use super::mem_alloc::Type;
+
 #[derive(Debug, Clone)]
 pub enum Token {
     SRaw, SClass, SFn,
-    Defun(String, usize), Endef,
+    Defun(String, usize, Vec<Type>, Type), Endef,
     Defcl(String), Endcl,
     Pushi(i32), Pushf(f32), Pushv(usize), Pop,
     Load(usize), Store(usize),
@@ -95,7 +97,12 @@ impl Scanner {
             "defun" => {
                 let name = self.next_word();
                 let pars : usize = self.next_word().parse().unwrap();
-                Some(Inst {token: Token::Defun(name, pars), row: self.row})
+                let mut par_types : Vec<Type> = Vec::new();
+                for _ in 0..pars {
+                    par_types.push(Type::from_string(self.next_word()));
+                }
+                let ret_type = Type::from_string(self.next_word());
+                Some(Inst {token: Token::Defun(name, pars, par_types, ret_type), row: self.row})
             }
             "endef" => {
                 Some(Inst {token: Token::Endef, row: self.row})

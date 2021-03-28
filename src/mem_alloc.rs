@@ -1,6 +1,24 @@
 use std::collections::LinkedList;
 
 #[derive(Debug, Clone)]
+pub enum Type {
+    TInt, TFloat, TString, Void,
+    TClass(String)
+}
+
+impl Type {
+    pub fn from_string(s : String) -> Type {
+        match s.as_str() {
+            "int" => Type::TInt,
+            "float" => Type::TFloat,
+            "string" => Type::TString,
+            "NULL" => Type::Void,
+            _ => Type::TClass(s),
+        }
+    }
+}
+
+#[derive(Debug, Clone)]
 pub enum Atom {
     Ref(usize),
     VInt(i32),

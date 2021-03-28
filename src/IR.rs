@@ -288,7 +288,7 @@ pub fn make_defun(mut scan: Scanner) ->
     match scan.peek() {
         Some(v) => {
             match v.token {
-                Token::Defun(name, pars) => {
+                Token::Defun(name, pars, par_ts, ret_t) => {
                     scan.next();
                     let (exec, mut scan) = make_execs(scan);
                     match scan.next() {
