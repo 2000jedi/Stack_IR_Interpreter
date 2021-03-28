@@ -1,4 +1,4 @@
-# Specification of a Rust VM
+# Specification of the Intermediate Representation for a Rust VM
 
 ## Object Representation
 
@@ -35,11 +35,12 @@ There are two code sections.
 ### Stack and Memory Manipulation
 
 1. `pushi <immediate (i32)>` / `pushf <immediate (f32)>`
-2. `pop <heap_addr (u16)>`
+2. `pop`
 3. `load <heap_addr (u16)>`
 4. `store <heap_addr (u16)>`
 5. `stores <heap_addr (u16)> <len (u16)> <string (bytes[len])>`
-6. `alias <var (String)> <heap_addr (u16)>` associates a variable name with a heap object
+
+[comment]: # (6. `alias <var (String)> <heap_addr (u16)>` associates a variable name with a heap object)
 
 ### Arithmetic Operations
 
@@ -52,7 +53,7 @@ There are two code sections.
 ### Comparison Operation
 
 1. `eq`
-2. `neq`
+2. `ne`
 3. `gt`
 4. `lt`
 5. `ge`

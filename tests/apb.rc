@@ -1,0 +1,15 @@
+.raw
+.class
+.function
+defun main 0
+stores 0 4 "a = "
+load 0
+call print
+call readint      ; reads one integer from command line
+stores 0 4 "b = "
+load 0
+call print
+call readint
+add
+call println
+endef

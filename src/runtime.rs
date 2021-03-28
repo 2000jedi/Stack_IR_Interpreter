@@ -1,3 +1,4 @@
+use std::io::Write;
 use super::mem_alloc::*;
 
 pub fn print(mut atom : Atom, mut mem : Box<Memory>) -> Box<Memory> {
@@ -7,17 +8,22 @@ pub fn print(mut atom : Atom, mut mem : Box<Memory>) -> Box<Memory> {
             mem = print(atom, mem);
         }
         Atom::VInt(val) => {
-            println!("{}", val);
+            print!("{}", val);
         }
         Atom::VFloat(val) => {
-            println!("{}", val);
+            print!("{}", val);
         }
         Atom::VString(val) => {
-            println!("{}", val);
+            print!("{}", val);
         }
         Atom::Null => {
-            println!("Null");
+            print!("Null");
         }
     }
+    std::io::stdout().flush().unwrap();
     return mem;
+}
+
+pub fn readint() -> Atom {
+    return Atom::VInt(read!());
 }

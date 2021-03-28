@@ -2,15 +2,16 @@
  * rvmi -- The Rust VM Interpreter.
  */
 
+#[macro_use]
+extern crate text_io;
+
 use std::fs;
 use std::env;
 
 pub mod scanner;
-pub mod ast;
+pub mod ir;
 pub mod mem_alloc;
 pub mod runtime;
-
-const COMPILE_ERROR : i32 = 1;
 
 fn print_help() {
     println!("NAME");
@@ -37,7 +38,7 @@ fn main() {
     }
     */
 
-    let ast = ast::make_ast(scanner);
-    println!("{:?}", ast);
-    ast.simulate(Box::new(mem_alloc::Memory::new()));
+    let program = ir::make_ir(scanner);
+    // println!("{:?}", program);
+    program.simulate(Box::new(mem_alloc::Memory::new()));
 }
