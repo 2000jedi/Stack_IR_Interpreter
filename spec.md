@@ -1,5 +1,7 @@
 # Specification of the Intermediate Representation for a Rust VM
 
+> The project is defered as the 3-address-form IR is prioritized for enhanced JIT support.
+
 ## Object Representation
 
 Each data in the VM is stored as an `atom` onto the stack or the heap. An `atom` stores a few tags along with the data. The data structure of an `object` is described below, with a field name and a description of the field:
