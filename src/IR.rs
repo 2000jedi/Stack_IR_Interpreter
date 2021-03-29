@@ -1,5 +1,5 @@
 use super::scanner::{Token, Scanner};
-use super::mem_alloc::{Atom, Memory};
+use super::mem_alloc::{Atom, Memory, Type};
 use super::runtime;
 
 use std::collections::HashMap;
@@ -23,7 +23,8 @@ pub struct Class {
 #[derive(Debug, Clone)]
 pub struct DeFun {
     pub name : String,
-    pub pars : usize,
+    pub par_ts : Vec<Type>,
+    pub ret_t  : Type,
     pub exec : Exec
 }
 
@@ -77,7 +78,7 @@ impl Exec {
                     mem.heap[*iloc] = Atom::VString(string.to_string());
                 }
                 Token::Load(iloc) => {
-                    mem.stack.push_back(Atom::Ref(*iloc));
+                    mem.stack.push_back(mem.heap[*iloc].clone());
                 }
                 Token::Call(name) => {
                     match name.as_str() {
@@ -108,6 +109,15 @@ impl Exec {
                                 }
                             }
                         }
+                    }
+                }
+                Token::Dup => {
+                    if mem.stack.len() == 0 {
+                        panic!{
+                            "stack is empty"
+                        }
+                    } else {
+                        mem.stack.push_back(mem.stack.back().unwrap().clone());
                     }
                 }
                 Token::Label(_) => (),
@@ -288,7 +298,7 @@ pub fn make_defun(mut scan: Scanner) ->
     match scan.peek() {
         Some(v) => {
             match v.token {
-                Token::Defun(name, pars, par_ts, ret_t) => {
+                Token::Defun(name, par_ts, ret_t) => {
                     scan.next();
                     let (exec, mut scan) = make_execs(scan);
                     match scan.next() {
@@ -308,7 +318,7 @@ pub fn make_defun(mut scan: Scanner) ->
                             }
                         }
                     }
-                    return (Some(DeFun{name, pars, exec}), scan);
+                    return (Some(DeFun{name, par_ts, ret_t, exec}), scan);
                 }
                 _ => {
                     return (None, scan);

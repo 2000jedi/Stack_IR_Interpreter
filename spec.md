@@ -39,6 +39,7 @@ There are two code sections.
 3. `load <heap_addr (u16)>`
 4. `store <heap_addr (u16)>`
 5. `stores <heap_addr (u16)> <len (u16)> <string (bytes[len])>`
+6. `dup` duplicates the top of stack
 
 [comment]: # (6. `alias <var (String)> <heap_addr (u16)>` associates a variable name with a heap object)
 

@@ -1,0 +1,29 @@
+.raw
+.class
+.function
+defun fib 2 int int int ; a function has 2 int parameters and returns an int
+store 0 ; sum
+store 1 ; index
+load 1
+branch 0
+load 0
+goto 1
+label 0
+pushi 1
+load 1
+sub
+load 0
+load 1
+mul
+call fib
+label 1
+endef
+defun main 0 NULL
+stores 2 0 "fib(n) calculator: n = "
+load 2
+call print
+call readint
+pushi 1
+call fib
+call println
+endef

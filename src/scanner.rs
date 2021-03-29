@@ -3,7 +3,7 @@ use super::mem_alloc::Type;
 #[derive(Debug, Clone)]
 pub enum Token {
     SRaw, SClass, SFn,
-    Defun(String, usize, Vec<Type>, Type), Endef,
+    Defun(String, Vec<Type>, Type), Endef,
     Defcl(String), Endcl,
     Pushi(i32), Pushf(f32), Pushv(usize), Pop,
     Load(usize), Store(usize),
@@ -11,7 +11,7 @@ pub enum Token {
     Alias(usize, usize),
     Add, Sub, Mul, Div, Rem,
     Eq, Ne, Lt, Le, Gt, Ge,
-    Call(String),
+    Call(String), Dup,
     Label(usize), Goto(usize), Branch(usize)
 }
 
@@ -102,7 +102,7 @@ impl Scanner {
                     par_types.push(Type::from_string(self.next_word()));
                 }
                 let ret_type = Type::from_string(self.next_word());
-                Some(Inst {token: Token::Defun(name, pars, par_types, ret_type), row: self.row})
+                Some(Inst {token: Token::Defun(name, par_types, ret_type), row: self.row})
             }
             "endef" => {
                 Some(Inst {token: Token::Endef, row: self.row})
@@ -119,6 +119,10 @@ impl Scanner {
                 let var : usize = self.next_word().parse().unwrap();
                 Some(Inst {token: Token::Load(var), row: self.row})
             }
+            "store" => {
+                let var : usize = self.next_word().parse().unwrap();
+                Some(Inst {token: Token::Store(var), row: self.row})
+            }
             "stores" => {
                 let heap : usize = self.next_word().parse().unwrap();
                 let _size : usize = self.next_word().parse().unwrap();
@@ -128,6 +132,9 @@ impl Scanner {
             "call" => {
                 let fun = self.next_word();
                 Some(Inst {token: Token::Call(fun), row: self.row})
+            }
+            "dup" => {
+                Some(Inst {token: Token::Dup, row: self.row})
             }
             "label" => {
                 let lbl : usize = self.next_word().parse().unwrap();
